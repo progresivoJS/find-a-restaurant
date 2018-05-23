@@ -9,8 +9,8 @@ import codecs
 # sys.stdout = codecs.getwriter('utf8')(sys.stdout)
 # sys.stderr = codecs.getwriter('utf8')(sys.stderr)
 
-foursquare_client_id = "SBIOLOMVSZBL0LYSFSEHB10TR12I1IWCVP1ZRMLUBXBSBSCT"
-foursquare_client_secret = "3YCRR5ZWROSX1EOI2IB2C0DE25OYR5V2HSQXHULZH44UH3HW"
+foursquare_client_id = "ZOF0SKNMMR33LNJI3AUDZB50YBWKCGDI3Z401DOP5VJ0JW2W"
+foursquare_client_secret = "ZGDPX355K0FEVQ4P0QMQ3Z3CHV3334WBLQ1LN1JAYDRB32WM"
 
 
 def findARestaurant(mealType, location):
@@ -45,18 +45,17 @@ def findARestaurant(mealType, location):
             imageURL = "http://pixabay.com/get/8926af5eb597ca51ca4c/1433440765/cheeseburger-34314_1280.png?direct"
 
         # 7. Return a dictionary containing the restaurant name, address, and image url
+        restaurant_address = ""
+        for i in first_restaurant['location']['formattedAddress']:
+            restaurant_address += i + " "
+
         restaurant_info = {
             'name': first_restaurant['name'],
-            'address': first_restaurant['location']['formattedAddress'],
+            'address': restaurant_address,
             'image': imageURL
         }
 
-        restaurant_name = restaurant_info['name']
-        restaurant_address = ""
-        for i in restaurant_info['address']:
-            restaurant_address += i + " "
-
-        print("Restaurant name : {}".format(restaurant_name))
+        print("Restaurant name : {}".format(restaurant_info['name']))
         print("Restaurant address : {}".format(restaurant_address))
         print("Image : {}".format(restaurant_info['image']))
         return restaurant_info
