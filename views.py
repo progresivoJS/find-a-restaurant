@@ -10,13 +10,6 @@ import codecs
 # sys.stdout = codecs.getwriter('utf8')(sys.stdout)
 # sys.stderr = codecs.getwriter('utf8')(sys.stderr)
 
-
-#foursquare_client_id = ''
-
-#foursquare_client_secret = ''
-
-#google_api_key = ''
-
 engine = create_engine('sqlite:///restaruants.db')
 
 Base.metadata.bind = engine
@@ -29,7 +22,7 @@ app = Flask(__name__)
 def all_restaurants_handler():
     if request.method == 'GET':
         restaurants = session.query(Restaurant).all()
-        return jsonify(restaurants=[i.serialize for i in restaurants])
+        return jsonify(restaurants = [i.serialize for i in restaurants])
     elif request.method == 'POST':
         location = request.args.get('location')
         mealType = request.args.get('mealType')
@@ -40,12 +33,31 @@ def all_restaurants_handler():
                 restaurant_name = restaurant['name'], restaurant_address = restaurant['address'], restaurant_image = restaurant['image'])
             session.add(newItem)
             session.commit()
-            return jsonify(restaurant=newItem.serialize)
+            return jsonify(restaurant = newItem.serialize)
+        else:
+            return jsonify(error = 'No restaurant')
 
 
 @app.route('/restaurants/<int:id>', methods=['GET', 'PUT', 'DELETE'])
 def restaurant_handler(id):
-    pass
+    if request.method == 'GET':
+        restaurant = session.query(Restaurant).filter_by(id = id).one()
+        return jsonify(restaurant = restaurant.serialize)
+    elif request.method == 'PUT':
+        print("hi")
+        restaurant = session.query(Restaurant).filter_by(id = id).one()
+        print(restaurant)
+        restaurant.restaurant_name = request.args.get('name')
+        restaurant.restaurant_address = request.args.get('address')
+        restaurant.restaurant_image = request.args.get('image')
+        session.add(restaurant)
+        session.commit()
+        return jsonify(restaurant = restaurant.serialize)
+    elif request.method == 'DELETE':
+        restaurant = session.query(Restaurant).filter_by(id = id).one()
+        session.delete(restaurant)
+        session.commit()
+        return "Deleted {} restaurant.".format(id)
 
 
 if __name__ == '__main__':
